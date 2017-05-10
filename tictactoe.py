@@ -1,92 +1,88 @@
 from __future__ import print_function
 
-board = [['-', '-', '-'] for x in xrange(3)]
+BOARD = [['-', '-', '-'] for x in xrange(3)]
 
-symbols = ['x', 'o']
-playerTurn = symbols[0]
+SYMBOLS = ['x', 'o']
+PLAYER_TURN = SYMBOLS[0]
 
-def PrintBoard():
-    def PrintLine(row):
+def print_board():
+    '''
+    docstring: print_board
+    '''
+    def print_line(row):
+        '''
+        docstring: print_line
+        '''
         print('#', end='')
         for item in row:
             print(item, end='')
         print('#')
-    global board
+    global BOARD
     print('#'*5)
-    for row in board:
-        PrintLine(row)
+    for row in BOARD:
+        print_line(row)
     print('#'*5)
 
-def getBoardItem(location):
+def get_board_item(location):
     '''
-    docstring: "hello" 
+    docstring: get_board_item
     '''
-    global board
-    return board[(location - location % 3) / 3][location % 3]
+    global BOARD
+    return BOARD[(location - location % 3) / 3][location % 3]
 
-def isEmptyCell(location):
+def is_empty_cell(location):
     '''
-    docstring: "hello" 
+    docstring: is_empty_cell
     '''
-    return getBoardItem(location) == '-'
+    return get_board_item(location) == '-'
 
-def playMove():
+def play_move():
+    '''
+    docstring: play_move
+    '''
     move = -1
     while True:
-        move = raw_input("current player is ["+playerTurn+"] Enter a number(0-8):")
+        move = raw_input("current player is [%s] Enter a number(0-8):"%PLAYER_TURN)
         try:
             move = int(move)
         except ValueError:
             print("not a number or not in range")
             continue
-        if 0 > move or 8 < move:
+        if move < 0 or move > 8:
             print('out of range')
             continue
-        elif board[(move - move % 3) / 3][move % 3] != '-':
+        elif get_board_item(move) != '-':
             print('This cell is already set')
             continue
         else:
             break
-    board[(move - move % 3) / 3][move % 3] = playerTurn
+    BOARD[(move - move % 3) / 3][move % 3] = PLAYER_TURN
 
-def gameOver():
-    global board
+def game_over():
+    '''
+    docstring: game_over
+    '''
+    global BOARD
     sols = [[0, 1, 2], [0, 3, 6], [0, 4, 8], [1, 4, 7], [2, 5, 8], [2, 4, 6], [3, 4, 5], [6, 7, 8]]
     for solution in sols:
-        if getBoardItem(solution[0]) == getBoardItem(solution[1]) and getBoardItem(solution[1]) == getBoardItem(solution[2]):
-            if getBoardItem(solution[0]) == 'x':
-                print('x is the winner!')
-                return True
-            elif getBoardItem(solution[0]) == 'o':
-                print('o is the winner')
-                return True
-            else:
-                pass
+        if get_board_item(solution[0]) == get_board_item(solution[1]) and get_board_item(solution[1]) == get_board_item(solution[2]) and get_board_item(solution[0]) in SYMBOLS:
+            print('%s is the winner!'%get_board_item(solution[0]))
+            return True
     for i in range(0, 9):
-        if isEmptyCell(i):
+        if is_empty_cell(i):
             break
     else:
         print('draw')
         return True
     return False
 
-PrintBoard()
-while not gameOver():
-    playMove()
-    if playerTurn == symbols[1]:
-        playerTurn = symbols[0]
+print_board()
+while not game_over():
+    play_move()
+    if PLAYER_TURN == SYMBOLS[1]:
+        PLAYER_TURN = SYMBOLS[0]
     else:
-        playerTurn = symbols[1]
-    PrintBoard()
+        PLAYER_TURN = SYMBOLS[1]
+    print_board()
 
-PRESS_ANY_KEY = input_raw("press any key to continue")
-'''
-      2
-  _ _ _ 
-1 _ _ _
-  6 7 8
-
-5%3 = 2
-5-2 = 3
-3/3 = 1
-'''
+PRESS_ANY_KEY = raw_input("press any key to continue")
